@@ -48,7 +48,7 @@ namespace BlobConsole
                 await File.WriteAllTextAsync(localFilePath, "Hello, World!");
                 // Get a reference to a blob
                 BlobClient blobClient = newClient.GetBlobClient(fileName);
-                Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
+                Console.WriteLine($"Uploading Blob to Container: {item.Name}\n\t {blobClient.Uri}\n");
                 // Upload data from the local file
                 await blobClient.UploadAsync(localFilePath, true);
 
