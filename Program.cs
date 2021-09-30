@@ -17,7 +17,9 @@ namespace BlobConsole
             string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
             Console.WriteLine(connectionString);
             Console.WriteLine();
+            Console.WriteLine("Press any key to continue..");
             Console.ReadKey();
+            Console.Clear();
 
             //Create a BlobServiceClient object which will be used to create a container client
             BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
@@ -32,6 +34,8 @@ namespace BlobConsole
             {
                 Console.WriteLine("Type which container to work with:");
                 var input = Console.ReadLine();
+                Console.WriteLine();
+
                 var item = await GetContainer(blobServiceClient, input);
                 if (item == null)
                 {
@@ -39,44 +43,17 @@ namespace BlobConsole
                     Environment.Exit(0);
                 }
                 BlobContainerClient newClient = blobServiceClient.GetBlobContainerClient(input);
-
-                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
-                string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
-                string localFilePath = Path.Combine(localPath, fileName);
-
-                // Write text to the file
-                await File.WriteAllTextAsync(localFilePath, "Hello, World!");
-                // Get a reference to a blob
-                BlobClient blobClient = newClient.GetBlobClient(fileName);
-                Console.WriteLine($"Uploading Blob to Container: {item.Name}\n\t {blobClient.Uri}\n");
-                // Upload data from the local file
-                await blobClient.UploadAsync(localFilePath, true);
-
-                Console.WriteLine("Listing blobs...");
-                // List all blobs in the container
+                CreateTextFileInContainer(newClient);
+                Console.WriteLine("Blobs uploaded:\t");
                 await foreach (BlobItem blobItem in newClient.GetBlobsAsync())
                 {
                     Console.WriteLine("\t" + blobItem.Name);
                 }
             }
-
             else
             {
-                // Create a local file in the ./textFiles/ directory for uploading and downloading
-                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
-                string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
-                string localFilePath = Path.Combine(localPath, fileName);
-
-                // Write text to the file
-                await File.WriteAllTextAsync(localFilePath, "Hello, World!");
-                // Get a reference to a blob
-                BlobClient blobClient = containerClient.GetBlobClient(fileName);
-                Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
-                // Upload data from the local file
-                await blobClient.UploadAsync(localFilePath, true);
-
-                Console.WriteLine("Listing blobs...");
-                // List all blobs in the container
+                CreateTextFileInContainer(containerClient);
+                Console.WriteLine("Blobs uploaded:\t");
                 await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
                 {
                     Console.WriteLine("\t" + blobItem.Name);
@@ -84,12 +61,6 @@ namespace BlobConsole
             }
         }
 
-
-        /// <summary>
-        /// Create Blob Container
-        /// </summary>
-        /// <param name="blobServiceClient"></param>
-        /// <returns></returns>
         private static async Task<BlobContainerClient> CreateSampleContainerAsync(BlobServiceClient blobServiceClient)
         {
             // Name the sample container based on new GUID to ensure uniqueness.
@@ -118,11 +89,6 @@ namespace BlobConsole
             return null;
         }
 
-        /// <summary>
-        /// List all Containers
-        /// </summary>
-        /// <param name="blobServiceClient"></param>
-        /// <returns></returns>
         async static Task<IEnumerable<BlobContainerItem>> ListContainers(BlobServiceClient blobServiceClient)
         {
             try
@@ -197,25 +163,27 @@ namespace BlobConsole
             }
         }
 
-        //private static async Task<BlobClient> CreateTextFileInContainer(BlobClient blobClient, BlobContainerClient container)
-        //{
-        //    string localPath = "./data/";
-        //    string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
-        //    string localFilePath = Path.Combine(localPath, fileName);
+        private static async void CreateTextFileInContainer(BlobContainerClient container)
+        {
+            try
+            {
+                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
+                string fileName = "quickstart" + Guid.NewGuid().ToString() + ".jpg";
+                string localFilePath = Path.Combine(localPath, fileName);
 
-        //    Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
-        //    // Upload data from the local file
-        //    await blobClient.UploadAsync(localFilePath, true);
-
-        //    try
-        //    {
-        //        if (await container.ExistsAsync())
-        //        {
-        //            await File.WriteAllTextAsync(localFilePath, "Hello, World!");
-        //            blobClient = container.GetBlobClient(fileName);
-        //            Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
-        //        }
-        //    }
-        //}
+                // Write text to the file
+                await File.WriteAllTextAsync(localFilePath, "Hello, World!");
+                // Get a reference to a blob
+                BlobClient blobClient = container.GetBlobClient(fileName);
+                Console.WriteLine($"Blob container: \n\t{container.Name}\n");
+                //Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
+                // Upload data from the local file
+                await blobClient.UploadAsync(localFilePath, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
     }
 }
