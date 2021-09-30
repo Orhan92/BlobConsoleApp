@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
-using BlobConsole.Menu;
 
 namespace BlobConsole
 {
@@ -35,10 +34,6 @@ namespace BlobConsole
 
             if (containerClient == null)
             {
-                int selectedMenu = Menu.Options("Select a container to work with", new[]
-                {
-
-                });
                 Console.WriteLine("Type which container to work with:");
                 var input = Console.ReadLine();
                 Console.WriteLine();
