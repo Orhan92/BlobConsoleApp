@@ -43,7 +43,7 @@ namespace BlobConsole
                     Environment.Exit(0);
                 }
                 BlobContainerClient newClient = blobServiceClient.GetBlobContainerClient(input);
-                CreateTextFileInContainer(newClient); 
+                CreateTextFileInContainer(newClient);
                 Console.WriteLine("Blobs uploaded:\t");
                 await foreach (BlobItem blobItem in newClient.GetBlobsAsync())
                 {
@@ -69,7 +69,7 @@ namespace BlobConsole
         {
             // Name the sample container based on new GUID to ensure uniqueness.
             // The container name must be lowercase.
-            Console.WriteLine("Type a container name you want to create: ");
+            Console.WriteLine("Type a container name you want to create (ONLY LOWCASE LETTERS) ");
             string containerName = Console.ReadLine();
             Console.WriteLine();
 
@@ -113,6 +113,12 @@ namespace BlobConsole
                         list.Add(containerItem);
                     }
                     Console.WriteLine();
+                }
+
+                if(list.Count() == 0)
+                {
+                    Console.WriteLine("There is no Blob containers\n");
+                    Environment.Exit(0);
                 }
                 return list;
             }
@@ -167,15 +173,6 @@ namespace BlobConsole
             }
         }
 
-        //private static async void GetListOfBlobsInContainer(BlobContainerClient container)
-        //{
-        //    Console.WriteLine("Blobs uploaded:\t");
-        //    await foreach (BlobItem blobItem in container.GetBlobsAsync())
-        //    {
-        //        Console.WriteLine("\t" + blobItem.Name);
-        //    }
-        //}
-
         private static async void CreateTextFileInContainer(BlobContainerClient container)
         {
             try
@@ -186,19 +183,16 @@ namespace BlobConsole
                 string localFilePath = Path.Combine(localPath, fileName);
 
                 // Write text to the file
-                //await File.WriteAllTextAsync(localFilePath, "Hello, World!");
                 using FileStream uploadFileStream = File.OpenRead(localFilePath);
+
                 // Get a reference to a blob
                 BlobClient blobClient = container.GetBlobClient(fileName);
                 Console.WriteLine($"Blob container: \n\t{container.Name}\n");
-                // Upload data from the local file
-                await blobClient.UploadAsync(localFilePath, true);
 
-                //Console.WriteLine("Blobs uploaded:\t");
-                //await foreach (BlobItem blobItem in container.GetBlobsAsync())
-                //{
-                //    Console.WriteLine("\t" + blobItem.Name);
-                //}
+                // Set the HttpHeader to be able to display image through URL in WebBrowser.
+                var blobHttpHeader = new BlobHttpHeaders { ContentType = "image/jpeg" };
+                // Upload data from the local file
+                await blobClient.UploadAsync(localFilePath, new BlobUploadOptions { HttpHeaders = blobHttpHeader });
             }
             catch (Exception ex)
             {
