@@ -89,7 +89,7 @@ namespace BlobConsole
             return null;
         }
 
-        async static Task<IEnumerable<BlobContainerItem>> ListContainers(BlobServiceClient blobServiceClient)
+        private async static Task<IEnumerable<BlobContainerItem>> ListContainers(BlobServiceClient blobServiceClient)
         {
             try
             {
@@ -120,7 +120,7 @@ namespace BlobConsole
             }
         }
 
-        async static Task<BlobContainerItem> GetContainer(BlobServiceClient blobServiceClient, string containerInput)
+        private async static Task<BlobContainerItem> GetContainer(BlobServiceClient blobServiceClient, string containerInput)
         {
             try
             {
@@ -163,6 +163,15 @@ namespace BlobConsole
             }
         }
 
+        //private static async void GetListOfBlobsInContainer(BlobContainerClient container)
+        //{
+        //    Console.WriteLine("Blobs uploaded:\t");
+        //    await foreach (BlobItem blobItem in container.GetBlobsAsync())
+        //    {
+        //        Console.WriteLine("\t" + blobItem.Name);
+        //    }
+        //}
+
         private static async void CreateTextFileInContainer(BlobContainerClient container)
         {
             try
@@ -179,6 +188,12 @@ namespace BlobConsole
                 //Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
                 // Upload data from the local file
                 await blobClient.UploadAsync(localFilePath, true);
+
+                //Console.WriteLine("Blobs uploaded:\t");
+                //await foreach (BlobItem blobItem in container.GetBlobsAsync())
+                //{
+                //    Console.WriteLine("\t" + blobItem.Name);
+                //}
             }
             catch (Exception ex)
             {
