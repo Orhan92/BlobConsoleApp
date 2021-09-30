@@ -43,11 +43,13 @@ namespace BlobConsole
                     Environment.Exit(0);
                 }
                 BlobContainerClient newClient = blobServiceClient.GetBlobContainerClient(input);
-                CreateTextFileInContainer(newClient);
+                CreateTextFileInContainer(newClient); 
                 Console.WriteLine("Blobs uploaded:\t");
                 await foreach (BlobItem blobItem in newClient.GetBlobsAsync())
                 {
-                    Console.WriteLine("\t" + blobItem.Name);
+                    //To get the full path to the blob URL
+                    var path = Path.Combine(newClient.Uri.AbsoluteUri, blobItem.Name);
+                    Console.WriteLine("\t" + "URL: " + path);
                 }
             }
             else
@@ -56,7 +58,9 @@ namespace BlobConsole
                 Console.WriteLine("Blobs uploaded:\t");
                 await foreach (BlobItem blobItem in containerClient.GetBlobsAsync())
                 {
-                    Console.WriteLine("\t" + blobItem.Name);
+                    //Console.WriteLine("\t" + blobItem.Name);
+                    var path = Path.Combine(containerClient.Uri.AbsoluteUri, blobItem.Name);
+                    Console.WriteLine("\t" + "URL: " + path);
                 }
             }
         }
@@ -176,16 +180,17 @@ namespace BlobConsole
         {
             try
             {
-                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
-                string fileName = "quickstart" + Guid.NewGuid().ToString() + ".jpg";
+                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\images\";
+                //string fileName = "quickstart" + Guid.NewGuid().ToString() + ".jpg";
+                string fileName = "fire-fist.jpg";
                 string localFilePath = Path.Combine(localPath, fileName);
 
                 // Write text to the file
-                await File.WriteAllTextAsync(localFilePath, "Hello, World!");
+                //await File.WriteAllTextAsync(localFilePath, "Hello, World!");
+                using FileStream uploadFileStream = File.OpenRead(localFilePath);
                 // Get a reference to a blob
                 BlobClient blobClient = container.GetBlobClient(fileName);
                 Console.WriteLine($"Blob container: \n\t{container.Name}\n");
-                //Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
                 // Upload data from the local file
                 await blobClient.UploadAsync(localFilePath, true);
 
