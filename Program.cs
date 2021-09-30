@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Linq;
+using BlobConsole.Menu;
 
 namespace BlobConsole
 {
@@ -14,6 +15,8 @@ namespace BlobConsole
         static async Task Main(string[] args)
         {
             Console.WriteLine("Welcome to the Blob application!");
+
+            //This is to make sure we have the right connection string
             string connectionString = Environment.GetEnvironmentVariable("AZURE_STORAGE_CONNECTION_STRING");
             Console.WriteLine(connectionString);
             Console.WriteLine();
@@ -27,11 +30,15 @@ namespace BlobConsole
             //Call for CreateSampleContainerAsync and store it inside a variable
             var containerClient = await CreateSampleContainerAsync(blobServiceClient);
 
-            //Containing list of containers in Azure
-            var containerList = await ListContainers(blobServiceClient);
+            //Containing list of containers in Azure / showing us the list in console
+            await ListContainers(blobServiceClient);
 
             if (containerClient == null)
             {
+                int selectedMenu = Menu.Options("Select a container to work with", new[]
+                {
+
+                });
                 Console.WriteLine("Type which container to work with:");
                 var input = Console.ReadLine();
                 Console.WriteLine();
