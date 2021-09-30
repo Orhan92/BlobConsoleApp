@@ -6,11 +6,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="bin\Debug\netcoreapp3.1\data\**" />
+    <EmbeddedResource Remove="bin\Debug\netcoreapp3.1\data\**" />
+    <None Remove="bin\Debug\netcoreapp3.1\data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="bin\Debug\netcoreapp3.1\data\" />
+    <Folder Include="bin\Debug\netcoreapp3.1\" />
     <Folder Include="textFiles\" />
   </ItemGroup>
 
