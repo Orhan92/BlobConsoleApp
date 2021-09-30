@@ -39,7 +39,7 @@ namespace BlobConsole
             }
 
             // Create a local file in the ./data/ directory for uploading and downloading
-            string localPath = "./textFiles/";
+            string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
             string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
             string localFilePath = Path.Combine(localPath, fileName);
 
@@ -76,7 +76,7 @@ namespace BlobConsole
         {
             // Name the sample container based on new GUID to ensure uniqueness.
             // The container name must be lowercase.
-            string containerName = "blob";
+            string containerName = "orhanoo";
 
             try
             {
