@@ -28,28 +28,45 @@ namespace BlobConsole
             //Containing list of containers in Azure
             var containerList = await ListContainers(blobServiceClient);
 
-            Console.WriteLine("Type which container to work with:");
-            var containerInput = Console.ReadLine();
-
-            foreach (var x in containerList)
+            if (containerClient == null)
             {
-                if (containerInput == x.Name)
+                Console.WriteLine("Type which container to work with:");
+                var input = Console.ReadLine();
+                var item = await GetContainer(blobServiceClient, input);
+                if (item == null)
                 {
-                    Console.WriteLine($"You Selected container: {x.Name}");
+                    Console.WriteLine("We could not find a corresponding container.\n");
+                    Environment.Exit(0);
+                }
+                BlobContainerClient newClient = blobServiceClient.GetBlobContainerClient(input);
+
+                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
+                string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
+                string localFilePath = Path.Combine(localPath, fileName);
+
+                // Write text to the file
+                await File.WriteAllTextAsync(localFilePath, "Hello, World!");
+                // Get a reference to a blob
+                BlobClient blobClient = newClient.GetBlobClient(fileName);
+                Console.WriteLine("Uploading to Blob storage as blob:\n\t {0}\n", blobClient.Uri);
+                // Upload data from the local file
+                await blobClient.UploadAsync(localFilePath, true);
+
+                Console.WriteLine("Listing blobs...");
+                // List all blobs in the container
+                await foreach (BlobItem blobItem in newClient.GetBlobsAsync())
+                {
+                    Console.WriteLine("\t" + blobItem.Name);
                 }
             }
 
-            // Create a local file in the ./textFiles/ directory for uploading and downloading
-            string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
-            string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
-            string localFilePath = Path.Combine(localPath, fileName);
-
-            if (containerClient == null)
-            {
-                Console.WriteLine("\nWe could not find a corresponding container.\n");
-            }
             else
             {
+                // Create a local file in the ./textFiles/ directory for uploading and downloading
+                string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
+                string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
+                string localFilePath = Path.Combine(localPath, fileName);
+
                 // Write text to the file
                 await File.WriteAllTextAsync(localFilePath, "Hello, World!");
                 // Get a reference to a blob
@@ -77,7 +94,9 @@ namespace BlobConsole
         {
             // Name the sample container based on new GUID to ensure uniqueness.
             // The container name must be lowercase.
-            string containerName = "mofasa";
+            Console.WriteLine("Type a container name you want to create: ");
+            string containerName = Console.ReadLine();
+            Console.WriteLine();
 
             try
             {
@@ -91,14 +110,13 @@ namespace BlobConsole
                 }
             }
             catch (RequestFailedException e)
-            {            
+            {
                 Console.WriteLine("HTTP error code {0}: {1}",
                                     e.Status, e.ErrorCode);
-                Console.WriteLine("Proceeding..\n");
+                Console.WriteLine("Proceeding..");
             }
             return null;
         }
-
 
         /// <summary>
         /// List all Containers
@@ -114,7 +132,7 @@ namespace BlobConsole
                     blobServiceClient.GetBlobContainersAsync(BlobContainerTraits.Metadata, default)
                     .AsPages(default);
 
-                Console.WriteLine("Listing Containers..");
+                Console.WriteLine("\nListing Containers..");
 
                 List<BlobContainerItem> list = new List<BlobContainerItem>();
                 await foreach (Page<BlobContainerItem> containerPage in resultSegment)
@@ -133,7 +151,49 @@ namespace BlobConsole
                 Console.WriteLine(e.Message);
                 Console.ReadLine();
                 return null;
-                //throw;
+            }
+        }
+
+        async static Task<BlobContainerItem> GetContainer(BlobServiceClient blobServiceClient, string containerInput)
+        {
+            try
+            {
+                // Call the listing operation and enumerate the result segment.
+                var resultSegment =
+                    blobServiceClient.GetBlobContainersAsync(BlobContainerTraits.Metadata, default)
+                    .AsPages(default);
+
+                //Console.WriteLine("Listing Containers..");
+
+                List<BlobContainerItem> list = new List<BlobContainerItem>();
+                List<BlobContainerItem> selectedItem = new List<BlobContainerItem>();
+
+                await foreach (Page<BlobContainerItem> containerPage in resultSegment)
+                {
+                    foreach (BlobContainerItem containerItem in containerPage.Values)
+                    {
+                        //Console.WriteLine("Container name: {0}", containerItem.Name);
+                        list.Add(containerItem);
+                    }
+
+                    //containerInput = Console.ReadLine();
+                    foreach (var item in list)
+                    {
+                        if (containerInput.Contains(item.Name))
+                        {
+                            selectedItem.Add(item);
+                            return item;
+                        }
+                    }
+                    Console.WriteLine();
+                }
+                return null;
+            }
+            catch (RequestFailedException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.ReadLine();
+                return null;
             }
         }
 
