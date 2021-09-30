@@ -25,6 +25,7 @@ namespace BlobConsole
             //Call for CreateSampleContainerAsync and store it inside a variable
             var containerClient = await CreateSampleContainerAsync(blobServiceClient);
 
+            //Containing list of containers in Azure
             var containerList = await ListContainers(blobServiceClient);
 
             Console.WriteLine("Type which container to work with:");
@@ -38,7 +39,7 @@ namespace BlobConsole
                 }
             }
 
-            // Create a local file in the ./data/ directory for uploading and downloading
+            // Create a local file in the ./textFiles/ directory for uploading and downloading
             string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\textFiles\";
             string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
             string localFilePath = Path.Combine(localPath, fileName);
@@ -90,7 +91,7 @@ namespace BlobConsole
                 }
             }
             catch (RequestFailedException e)
-            {
+            {            
                 Console.WriteLine("HTTP error code {0}: {1}",
                                     e.Status, e.ErrorCode);
                 Console.WriteLine("Proceeding..\n");
