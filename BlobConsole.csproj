@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <Folder Include="bin\Debug\netcoreapp3.1\data\" />
-    <Folder Include="data\" />
+    <Folder Include="textFiles\" />
   </ItemGroup>
 
 </Project>

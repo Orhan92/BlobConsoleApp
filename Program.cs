@@ -39,7 +39,7 @@ namespace BlobConsole
             }
 
             // Create a local file in the ./data/ directory for uploading and downloading
-            string localPath = "./data/";
+            string localPath = "./textFiles/";
             string fileName = "quickstart" + Guid.NewGuid().ToString() + ".txt";
             string localFilePath = Path.Combine(localPath, fileName);
 
