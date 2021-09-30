@@ -179,7 +179,7 @@ namespace BlobConsole
             {
                 string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\images\";
                 //string fileName = "quickstart" + Guid.NewGuid().ToString() + ".jpg";
-                string fileName = "fire-fist.jpg";
+                string fileName = "wolf.jpg";
                 string localFilePath = Path.Combine(localPath, fileName);
 
                 // Write text to the file
