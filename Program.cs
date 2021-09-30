@@ -76,7 +76,7 @@ namespace BlobConsole
         {
             // Name the sample container based on new GUID to ensure uniqueness.
             // The container name must be lowercase.
-            string containerName = "mycontainer";
+            string containerName = "blob";
 
             try
             {
