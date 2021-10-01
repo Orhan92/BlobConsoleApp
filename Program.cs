@@ -32,7 +32,7 @@ namespace BlobConsole
             //Containing list of containers in Azure / showing us the list in console
             await ListContainers(blobServiceClient);
 
-            //containerClient will be null if the container name already exists. Then we will enter this IF block
+            //containerClient will be null if the container name already exists. Then we will enter this IF block 
             if (containerClient == null)
             {
                 Console.WriteLine("Type which container to work with:");
@@ -170,7 +170,7 @@ namespace BlobConsole
                         list.Add(containerItem);
                     }
 
-                    //if use input matches with any of the containers in the cloud we will add it to the selectedItem list and return it.
+                    //if user input matches with any of the containers in the cloud we will add it to the selectedItem list and return it.
                     foreach (var item in list)
                     {
                         if (containerInput.Contains(item.Name))
