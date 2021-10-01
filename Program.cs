@@ -10,7 +10,7 @@ using System.Linq;
 namespace BlobConsole
 {
     class Program
-    {
+    { 
         static async Task Main(string[] args)
         {
             Console.WriteLine("Welcome to the Blob application!");
@@ -197,7 +197,7 @@ namespace BlobConsole
             {
                 //Absolute path to our image folder, because relative didn't work.
                 string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\images\";
-                string fileName = "wolf.jpg";
+                string fileName = "headphones.jpg";
 
                 //Combine localpath with filename in order to find the image inside of the folder
                 string localFilePath = Path.Combine(localPath, fileName);
