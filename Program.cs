@@ -197,7 +197,7 @@ namespace BlobConsole
             {
                 //Absolute path to our image folder, because relative didn't work.
                 string localPath = @"C:\Users\orhan\source\repos\BlobConsoleApp\images\";
-                string fileName = "headphones.jpg";
+                string fileName = "fire-fist.jpg";
 
                 //Combine localpath with filename in order to find the image inside of the folder
                 string localFilePath = Path.Combine(localPath, fileName);
